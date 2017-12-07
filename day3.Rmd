@@ -144,12 +144,12 @@ What is the first value written that is larger than your puzzle input?
 
 Your puzzle input is still 265149.
 
-```{r}
+```{r, message=FALSE}
 library(data.table)
 board2 <- data.table(
   x = c(0,1,1,0,-1,-1,-1, 0, 1, 2,2,2,2,1,0,-1,-2,-2,-2,-2,-2,-1, 0,1,2), 
   y = c(0,0,1,1, 1, 0,-1,-1,-1,-1,0,1,2,2,2, 2, 2, 1, 0,-1,-2,-2,-2,-2,-2),
-  z = c(1,1,2,4,5,10,11,23,25,26,54,57,59,122,133,142,147,304,330,351,362,747,806,854,905)
+  z = c(1,1,2,4,5,10,11,23,25,26,54,57,59,122,133,142,147,304,330,351,362,747,806,NA,NA)
 )
 ```
 
@@ -186,20 +186,24 @@ add_spiral_value <- function(board) {
   neighbors <- merge(near_x, near_y, all = TRUE)
   match_neighbors <- merge(neighbors, board)
   coord$z <- sum(match_neighbors$z, na.rm = TRUE)
+  # print(coord)
   board[x == coord$x & y == coord$y] <- coord
   return(board)
 }
 ```
 
 ```{r}
-board2 <- add_spiral_rows(board2)
-miss_z <- sum(is.na(board2$z))
-while (miss_z > 0) {
-  board2 <- add_spiral_value(board2)
+current_max <- max(board2$z, na.rm = TRUE)
+while (current_max < input) {
+  board2 <- add_spiral_rows(board2)
   miss_z <- sum(is.na(board2$z))
+  while (miss_z > 0) {
+    board2 <- add_spiral_value(board2)
+    miss_z <- sum(is.na(board2$z))
+  }
+  current_max <- max(board2$z, na.rm = TRUE)
 }
-if (max(board2$z) > input) {
-  board2[z > input][1]
-}
+board2[z > input][1]
 ```
 
+That's the right answer! You are one gold star closer to debugging the printer.
