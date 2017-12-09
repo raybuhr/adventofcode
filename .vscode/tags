@@ -1,0 +1,14 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+day4.py	../day4/day4.py	1;"	kind:file	line:1
+filename	../day4/day4.py	/^filename = pwd + "\/day4.txt"$/;"	kind:variable	line:5
+line_lengths	../day4/day4.py	/^line_lengths = [len(x) for x.strip("\\n") in lines]$/;"	kind:variable	line:10
+lines	../day4/day4.py	/^  lines = f.readlines()$/;"	kind:variable	line:8
+os	../day4/day4.py	/^import os$/;"	kind:namespace	line:3
+pwd	../day4/day4.py	/^pwd = os.path.abspath(os.curdir)$/;"	kind:variable	line:4
+uniq_legnths	../day4/day4.py	/^uniq_legnths = [len(x) for x.strip("\\n") in set(lines)]$/;"	kind:variable	line:11
+valid_passwords	../day4/day4.py	/^valid_passwords = [1 for x in range(len(line_lengths)) if line_legnths[x] == uniq_lengths[x]]$/;"	kind:variable	line:12
