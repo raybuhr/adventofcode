@@ -28,4 +28,3 @@ word_df <- data_frame(line = pws) %>%
   mutate(words = map(line, strsplit, split = " ")) %>% 
   mutate(word_count = map_chr(words, unlist) %>% length())
 ```
-
