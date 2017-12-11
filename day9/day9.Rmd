@@ -17,6 +17,7 @@ You don't see any characters that deviate from these rules. Outside garbage, you
 
 Here are some self-contained pieces of garbage:
 
+```
 <>, empty garbage.
 <random characters>, garbage containing random characters.
 <<<<>, because the extra < are ignored.
@@ -24,8 +25,11 @@ Here are some self-contained pieces of garbage:
 <!!>, because the second ! is canceled, allowing the > to terminate the garbage.
 <!!!>>, because the second ! and the first > are canceled.
 <{o"i!a,<{i<a>, which ends at the first >.
+```
+
 Here are some examples of whole streams and the number of groups they contain:
 
+```
 {}, 1 group.
 {{{}}}, 3 groups.
 {{},{}}, also 3 groups.
@@ -34,8 +38,11 @@ Here are some examples of whole streams and the number of groups they contain:
 {<a>,<a>,<a>,<a>}, 1 group.
 {{<a>},{<a>},{<a>},{<a>}}, 5 groups.
 {{<!>},{<!>},{<!>},{<a>}}, 2 groups (since all but the last > are canceled).
+```
+
 Your goal is to find the total score for all groups in your input. Each group is assigned a score which is one more than the score of the group that immediately contains it. (The outermost group gets a score of 1.)
 
+```
 {}, score of 1.
 {{{}}}, score of 1 + 2 + 3 = 6.
 {{},{}}, score of 1 + 2 + 2 = 5.
@@ -44,6 +51,8 @@ Your goal is to find the total score for all groups in your input. Each group is
 {{<ab>},{<ab>},{<ab>},{<ab>}}, score of 1 + 2 + 2 + 2 + 2 = 9.
 {{<!!>},{<!!>},{<!!>},{<!!>}}, score of 1 + 2 + 2 + 2 + 2 = 9.
 {{<a!>},{<a!>},{<a!>},{<ab>}}, score of 1 + 2 = 3.
+```
+
 What is the total score for all groups in your input?
 
 ```{r, message=FALSE}
@@ -54,39 +63,109 @@ text_chars = unlist(strsplit(text, split = '', fixed = TRUE))
 ```
 
 ```{r}
-stream = data.frame(char = text_chars, stringsAsFactors = FALSE)
+stream <- data.frame(char = text_chars, stringsAsFactors = FALSE)
 ```
 
 Remove Cancel (!)
 
 ```{r}
 cancel_df <- stream %>% 
+  mutate(origin = 1:nrow(.)) %>% 
   mutate(exclaim = char == "!")
 num_exclaims <- sum(cancel_df$exclaim)
 while (num_exclaims > 0) {
-  cancel_df 
-
+  cancel_df <- cancel_df %>%
+    mutate(rownum = 1:nrow(.)) %>% 
+    mutate(cumsum_exclaim = cumsum(exclaim))
+  cancel_rows <- filter(cancel_df, cumsum_exclaim == 1)
+  drop_rows <- c(cancel_rows$rownum[1], cancel_rows$rownum[1] + 1)
+  cancel_df <- cancel_df[-drop_rows, ]
+  num_exclaims <- sum(cancel_df$exclaim)
 }
-
-  stream$rownum <- 1:nrow(stream)
-  stream$cumsum_exclaim <- cumsum(stream$exclaim)
-  cancel_df <- filter(stream, cumsum_exclaim == 1)
-  cancel_chars <- c(cancel_df$rownum, cancel_df$rownum+1)
-  stream <- stream[-cancel_chars, ]
-  num_exclaims <- sum(stream$exclaim)
 ```
 
 Remove Garbage (<>)
 
 ```{r}
-stream$start_garbage <- stream$char == "<"
-stream$end_garbage <- stream$char == ">"
-num_garbage <- sum(stream$start_garbage)
+garbage_df <- cancel_df %>% 
+  mutate(start_garbage = char == "<",
+         end_garbage = char == ">")
+num_garbage <- sum(garbage_df$start_garbage)
 while (num_garbage > 0) {
-  stream$cumsum_start_garbage <- cumsum(stream$start_garbage)
-  stream$cumsum_end_garbage <- cumsum(stream$end_garbage)
-  rm_garbage <- bind_rows(filter(stream, cumsum_start_garbage == 1),
-                          filter(stream, cumsum_end_garbage == 1))
+  garbage_df <- garbage_df %>%
+    mutate(rownum = 1:nrow(.)) %>% 
+    mutate(cumsum_start_garbage = cumsum(start_garbage),
+           cumsum_end_garbage = cumsum(end_garbage))
+  garbage_rows <- filter(garbage_df, cumsum_start_garbage >= 1 & cumsum_end_garbage < 1)
+  drop_rows <- c(garbage_rows$rownum, max(garbage_rows$rownum) + 1)
+  garbage_df <- garbage_df[-drop_rows, ]
+  num_garbage <- sum(garbage_df$start_garbage)
 }
 ```
 
+Score Groups ({})
+
+```{r}
+score_df <- garbage_df %>% 
+  filter(char == "{" | char == "}") %>% 
+  select(char) %>% 
+  mutate(open = char == "{",
+         close = char == "}")
+score <- 0
+num_open <- sum(score_df$open)
+while (num_open > 0) {
+  score_df <- score_df %>% 
+    mutate(rownum = 1:nrow(.)) %>% 
+    mutate(score = cumsum(open))
+  first_close <- filter(score_df, close)[1,]
+  score_group <- filter(score_df, rownum <= first_close$rownum)
+  group_rows <- filter(score_df, score == max(score_group$score))[1:2,]
+  drop_rows <- group_rows$rownum
+  score <- score + group_rows$score[1]
+  score_df <- score_df[-drop_rows, ]
+  num_open <- sum(score_df$open)
+}
+```
+
+That's the right answer! You are one gold star closer to debugging the printer.
+
+--- Part Two ---
+
+Now, you're ready to remove the garbage.
+
+To prove you've removed it, you need to count all of the characters within the garbage. The leading and trailing < and > don't count, nor do any canceled characters or the ! doing the canceling.
+
+```
+<>, 0 characters.
+<random characters>, 17 characters.
+<<<<>, 3 characters.
+<{!>}>, 2 characters.
+<!!>, 0 characters.
+<!!!>>, 0 characters.
+<{o"i!a,<{i<a>, 10 characters.
+```
+
+How many non-canceled characters are within the garbage in your puzzle input?
+
+```{r}
+garbage_rows <- cancel_df %>% 
+  mutate(in_garbage = !(origin %in% garbage_df$origin)) %>% 
+  filter(in_garbage) %>% 
+  mutate(open = char == "<",
+         close = char == ">")
+num_garbage <- sum(garbage_rows$open)
+count_garbage <- 0
+while (num_garbage > 0) {
+  garbage_rows <- garbage_rows %>%
+    mutate(rownum = 1:nrow(.)) %>% 
+    mutate(cumsum_open = cumsum(open),
+           cumsum_close = cumsum(close))
+  count_rows <- filter(garbage_rows, cumsum_open >= 1 & cumsum_close < 1)
+  count_garbage <- count_garbage + nrow(count_rows) - 1
+  drop_rows <- c(count_rows$rownum, max(count_rows$rownum) + 1)
+  garbage_rows <- garbage_rows[-drop_rows, ]
+  num_garbage <- sum(garbage_rows$open)
+}
+```
+
+That's the right answer! You are one gold star closer to debugging the printer.
