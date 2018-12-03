@@ -63,7 +63,6 @@ print('Part One:', len([x for x in unique_positions.values() if x > 1]))
 
 def claim_overlaps(claim):
     claim_pos = all_positions[claim]
-    overlaps = []
     for k, v in all_positions.items():
         if k == claim:
             continue
@@ -72,4 +71,4 @@ def claim_overlaps(claim):
     return False
 
 
-print('Part Two:', [claim for claim in data if not claim_overlaps(claim)])
+print('Part Two:', [claim for claim in data if not claim_overlaps(claim)][0])
