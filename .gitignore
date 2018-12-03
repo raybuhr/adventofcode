@@ -35,3 +35,6 @@ vignettes/*.pdf
 
 # ignore vscode settings
 .vscode/
+
+# Notebook checkpoints
+.ipynb_checkpoints/
