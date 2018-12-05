@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
+from __future__ import print_function
 
 with open('data.txt') as raw_data:
     data = raw_data.read()
