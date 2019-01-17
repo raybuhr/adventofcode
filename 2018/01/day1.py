@@ -1,5 +1,3 @@
-#/usr/bin/env python3
-
 from itertools import cycle
 
 with open('input.txt') as stream:
@@ -34,3 +32,4 @@ while not_found_repeat_frequency:
             break
 
 print('Iterations:', iterations)
+

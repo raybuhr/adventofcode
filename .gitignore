@@ -38,3 +38,7 @@ vignettes/*.pdf
 
 # Notebook checkpoints
 .ipynb_checkpoints/
+
+# pytest
+/.pytest_cache/
+/__pycache__/
