@@ -13,10 +13,7 @@ def test_check_if_triangle():
 
 
 def solve_part_1(data):
-    is_triangle = [
-        check_if_triangle(sides)
-        for sides in data
-    ]
+    is_triangle = [check_if_triangle(sides) for sides in data]
     return sum(is_triangle)
 
 
@@ -26,31 +23,24 @@ def split_data_into_columns(data):
     for col in range(num_columns):
         column = [line[col] for line in data]
         for i in range(0, len(column), 3):
-            triangles.append(column[i:(i+3)])
+            triangles.append(column[i : (i + 3)])
     return triangles
 
 
 def solve_part_2(data):
     triangles = split_data_into_columns(data)
-    is_triangle = [
-        check_if_triangle(sides)
-        for sides in triangles
-    ]
+    is_triangle = [check_if_triangle(sides) for sides in triangles]
     return sum(is_triangle)
 
 
 if __name__ == "__main__":
-    with open('input.txt') as fp:
-        data = [
-            line.split()
-            for line in
-            fp.read().split("\n")
-        ]
-    
+    with open("input.txt") as fp:
+        data = [line.split() for line in fp.read().split("\n")]
+
     print("Part 1:")
     pt1 = solve_part_1(data)
     print(pt1)
-    
+
     print("Part 2:")
     pt2 = solve_part_2(data)
     print(pt2)
