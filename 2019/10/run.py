@@ -1,12 +1,6 @@
-from aocd.models import Puzzle
+from aocd import get_data
 import numpy as np
 import pytest
-
-
-def get_data(year, day):
-    puzzle = Puzzle(year=year, day=day)
-    data = puzzle.input_data
-    return data
 
 
 def build_spacemap(data):

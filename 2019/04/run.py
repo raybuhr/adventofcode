@@ -1,5 +1,6 @@
 from collections import Counter
 
+
 def parse_data_range(data):
     start, stop = [int(d) for d in data.split("-")]
     return range(start, stop + 1)

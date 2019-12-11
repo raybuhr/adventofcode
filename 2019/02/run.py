@@ -1,11 +1,6 @@
-from aocd.models import Puzzle
+from aocd import get_data
 import pytest
 from intcode import Intcode
-
-def get_data():
-    puzzle = Puzzle(year=2019, day=2)
-    data = puzzle.input_data
-    return data
 
 
 def run(data, input_queue, verbose=False):
@@ -26,11 +21,12 @@ test_cases = [
     ("1,1,1,4,99,5,6,0,99", "30,1,1,4,2,5,6,0,99"),
 ]
 
+
 @pytest.mark.parametrize("test_data,expected", test_cases)
 def test_run_intcode(test_data, expected):
     intcode = run(test_data, [])
     got = ",".join(str(i) for i in intcode.data.values())
-    assert expected == got[:len(expected)]
+    assert expected == got[: len(expected)]
 
 
 def replace_program(data, noun, verb):
@@ -48,7 +44,7 @@ def replace_and_run(data, noun, verb):
 
 def solve_pt2(program):
     goal = 19690720
-    
+
     def guess_noun_and_verb(program, noun, verb):
         output = replace_and_run(program, noun, verb)
         return output.data[0]
@@ -59,7 +55,7 @@ def solve_pt2(program):
     while guess < goal:
         noun += 1
         guess = guess_noun_and_verb(program, noun, verb)
-    
+
     noun -= 1
     guess = guess_noun_and_verb(program, noun, verb)
     while guess < goal:
@@ -70,16 +66,16 @@ def solve_pt2(program):
 
 
 if __name__ == "__main__":
-    program = get_data()
-    
-    print("-"*30)
+    program = get_data(year=2019, day=2)
+
+    print("-" * 30)
     print("Part 1:")
     # replace position 1 with the value 12 and replace position 2 with the value 2
     output = replace_and_run(program, 12, 2)
     print(output.data[0])
-    print("-"*30)
+    print("-" * 30)
     print("Part 2:")
-    print("-"*30)
+    print("-" * 30)
     noun, verb = solve_pt2(program)
     print(100 * noun + verb)
-    print("-"*30)
+    print("-" * 30)

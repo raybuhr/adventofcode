@@ -1,11 +1,5 @@
-from aocd.models import Puzzle
-
+from aocd import get_data
 from intcode import Intcode
-
-def get_data(year, day):
-    puzzle = Puzzle(year=year, day=day)
-    data = puzzle.input_data
-    return data
 
 
 def run(data, input_queue, verbose=False):
@@ -21,7 +15,6 @@ def run(data, input_queue, verbose=False):
 def solve(data, input_queue):
     intcode = run(data, input_queue)
     return intcode.output_queue[-1]
-
 
 
 if __name__ == "__main__":

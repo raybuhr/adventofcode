@@ -1,7 +1,8 @@
+from aocd import get_data
 import math
 
-with open("input.txt") as fp:
-    data = fp.read().split("\n")
+# with open("input.txt") as fp:
+#     data = fp.read().split("\n")
 
 
 def calc_fuel(x):
@@ -33,6 +34,7 @@ def test_calc_all_fuel():
 
 
 if __name__ == "__main__":
+    data = get_data(year=2019, day=1)
     fuel_required = [calc_fuel(int(d)) for d in data]
     total_fuel = sum(f for f in fuel_required)
     print("Part 1:", total_fuel, sep="\n")

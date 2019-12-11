@@ -1,11 +1,5 @@
-from aocd.models import Puzzle
-
+from aocd import get_data
 from intcode import Intcode
-
-def get_data(year, day):
-    puzzle = Puzzle(year=year, day=day)
-    data = puzzle.input_data
-    return data
 
 
 def run(data, input_queue, verbose=False):
@@ -39,10 +33,9 @@ def test_solve_part1():
 
 
 if __name__ == "__main__":
-    data = get_data()
-    print("-"*20, "Part 1:", "-"*20)
+    data = get_data(year=2019, day=9)
+    print("-" * 20, "Part 1:", "-" * 20)
     print(solve_part1(data, [1]), "\n")
 
-    print("-"*20, "Part 2:", "-"*20)
+    print("-" * 20, "Part 2:", "-" * 20)
     print(solve_part1(data, [2]), "\n")
-

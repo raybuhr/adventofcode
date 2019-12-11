@@ -1,7 +1,4 @@
-def read_data():
-    with open("2019/06/input.txt") as fp:
-        data = fp.read()
-    return data
+from aocd import get_data
 
 
 def parse_data(data):
@@ -10,7 +7,7 @@ def parse_data(data):
 
 
 def parse_orbits(data):
-    return {b:a for a, b in [d.split(")") for d in data]}
+    return {b: a for a, b in [d.split(")") for d in data]}
 
 
 def find_orbits(obj, orbits):
@@ -82,14 +79,14 @@ def solve_part1():
 
 def solve_part2():
     orbits = parse_orbits(parse_data(read_data()))
-    dist = find_distance_between_objects('YOU', 'SAN', orbits)
+    dist = find_distance_between_objects("YOU", "SAN", orbits)
     print(dist)
 
 
 if __name__ == "__main__":
+    data = get_data(year=2019, day=6)
     print("Part 1:")
     solve_part1()
 
     print("Part 2:")
     solve_part2()
-

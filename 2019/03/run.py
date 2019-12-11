@@ -1,8 +1,8 @@
+from aocd import get_data
+
+
 def parse_data(data):
-    instructions = [
-    	(i[0], int(i[1:]))
-	for i in data.split(",")
-    ]
+    instructions = [(i[0], int(i[1:])) for i in data.split(",")]
     return instructions
 
 
@@ -11,7 +11,7 @@ def manhattan_distance(x, y):
 
 
 def find_min_dist(points):
-   return min(manhattan_distance(pt[0], pt[1]) for pt in points)
+    return min(manhattan_distance(pt[0], pt[1]) for pt in points)
 
 
 def track_path(instructions):
@@ -20,19 +20,19 @@ def track_path(instructions):
     for instruction in instructions:
         direction, dist = instruction
         if direction == "U":
-            new_pts = [(x, y + i) for i in range(1, dist+1)]
+            new_pts = [(x, y + i) for i in range(1, dist + 1)]
             points += new_pts
             y = y + dist
         if direction == "D":
-            new_pts = [(x, y - i) for i in range(1, dist+1)]
+            new_pts = [(x, y - i) for i in range(1, dist + 1)]
             points += new_pts
             y = y - dist
         if direction == "R":
-            new_pts = [(x + i, y) for i in range(1, dist+1)]
+            new_pts = [(x + i, y) for i in range(1, dist + 1)]
             points += new_pts
             x = x + dist
         if direction == "L":
-            new_pts = [(x - i, y) for i in range(1, dist+1)]
+            new_pts = [(x - i, y) for i in range(1, dist + 1)]
             points += new_pts
             x = x - dist
     return points
@@ -109,12 +109,11 @@ def solve_pt2(data):
 
 
 if __name__ == "__main__":
-    with open("2019/03/input.txt") as fp:
-        data = fp.read().strip()
-
+    # with open("2019/03/input.txt") as fp:
+    #    data = fp.read().strip()
+    data = get_data(year=2019, day=3)
     print("Part 1:")
     print(solve_pt1(data))
 
     print("Part 2:")
     print(solve_pt2(data))
-

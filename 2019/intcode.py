@@ -24,7 +24,7 @@ class Intcode:
         code = int(op[3:])
         modes = [int(m) for m in op[:3][::-1]]
         return (code, modes)
-    
+
     def print_state(self):
         print("opcode:", self.data[self.position])
         print("position:", self.position)
@@ -103,3 +103,10 @@ class Intcode:
             self.position += 2
         else:
             raise Intcode.Halt
+
+    def run(self, verbose=False):
+        while True:
+            try:
+                self.step(verbose=verbose)
+            except:
+                break
