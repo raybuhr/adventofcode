@@ -43,3 +43,6 @@ vignettes/*.pdf
 /.pytest_cache/
 /__pycache__/
 __pycache__/
+
+# secrets
+.env
