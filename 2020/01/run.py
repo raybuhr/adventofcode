@@ -7,22 +7,6 @@ def parse_data(data):
     return [int(i) for i in data.splitlines()]
 
 
-def solve_part1(data, sum_to_num=2020):
-    nums = parse_data(data)
-    for x, y in combinations(nums, 2):
-        if x + y == sum_to_num:
-            print(x, "*", y, "=", x*y)
-            return x, y
-
-
-def solve_part2(data, sum_to_num=2020):
-    nums = parse_data(data)
-    for x, y, z in combinations(nums, 3):
-        if x + y + z == sum_to_num:
-            print(x, "*", y, "*", z, "=", x*y*z)
-            return x, y, z
-
-
 def solve(data, sum_to_num=2020, num_combinations=2):
     nums = parse_data(data)
     for c in combinations(nums, num_combinations):
