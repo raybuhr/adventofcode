@@ -16,6 +16,16 @@ def solve_pt1(data):
 
 
 def solve_pt2(data):
+    # path_map is a lookup for how many paths exist between a string of consecutive numbers
+    path_map = {1: 1, 2: 1, 3: 2, 4: 4, 5: 7}
+    df = parse_data(data).to_frame("jolts")
+    df["diffs"] = df["jolts"] - df["jolts"].shift(1)
+    df["batch"] = (df["diffs"] == 3).cumsum()
+    runs = df.groupby("batch")["jolts"].count()
+    return runs.map(path_map).cumprod().max()
+
+
+def solve_with_dynamic_programming(data):
     jolts = sorted([int(i) for i in data.splitlines()])
     arrangements = {0: 1}
     for j in jolts:
