@@ -1,58 +1,22 @@
 from aocd import get_data
-from copy import deepcopy
-
-def parse_data(data):
-    return [d.split() for d in data.splitlines()]
-
-
-def step(pos, acc, instructions):
-    inst, val = instructions[pos]
-    val = int(val)
-    if inst == "acc":
-        acc += val
-        pos += 1
-    elif inst == "jmp":
-        pos += val
-    elif inst == "nop":
-        pos += 1
-    return pos, acc
-
-
-def run(instructions, log_jump_locs=False):
-    pos, acc, seen= 0, 0, []
-    if log_jump_locs:
-        jump_locs = []
-    while pos not in seen:
-        seen += [pos]
-        try:
-            pos, acc = step(pos, acc, instructions)
-            if log_jump_locs and "jmp" in instructions[pos]:
-                jump_locs += [pos]
-        except IndexError:
-            print(acc)
-            break
-    if log_jump_locs:
-        return acc, jump_locs
-    return acc
-
-
-def replace_instructions(pos, instructions):
-    inst = deepcopy(instructions)
-    inst[pos][0] = 'nop'
-    return inst
+from handholdconsole import HandHoldGameConsole
 
 
 def solve_pt1(data):
-    instructions = parse_data(data)
-    return run(instructions)
+    console = HandHoldGameConsole(data)
+    console.parse_data()
+    console.run()
+    return console.accumulator
 
 
 def solve_pt2(data):
-    instructions = parse_data(data)
-    _, jumps = run(instructions, True)
+    console = HandHoldGameConsole(data)
+    console.parse_data()
+    jumps = console.run(log_jump_locs=True)
     for j in jumps:
-        run(replace_instructions(j, instructions))
-    return ":-)"
+        console = HandHoldGameConsole(data)
+        console.replace_instructions(position=j)
+        console.run()
 
 
 if __name__ == "__main__":
