@@ -39,9 +39,9 @@ class Seats:
     def fill_open_seats_a(self, verbose=False):
         open_seats = self.find_open_seats()
         filled = []
-        for op in open_seats:
-            if all([self.seats[add(*op, *a)] != "#" for a in self.adj]):
-                filled.append(op)
+        for s in open_seats:
+            if all([self.seats[add(*s, *a)] != "#" for a in self.adj]):
+                filled.append(s)
         for f in filled:
             self.seats[f] = "#"
         if verbose:
@@ -50,9 +50,9 @@ class Seats:
     def leave_adjacent_seats_a(self, verbose=False):
         filled_seats = self.find_filled_seats()
         left = []
-        for fs in filled_seats:
-            if sum([self.seats[add(*fs, *a)] == "#" for a in self.adj]) >= 4:
-                left.append(fs)
+        for s in filled_seats:
+            if sum([self.seats[add(*s, *a)] == "#" for a in self.adj]) >= 4:
+                left.append(s)
         for l in left:
             self.seats[l] = "L"
         if verbose:
@@ -61,40 +61,40 @@ class Seats:
     def fill_open_seats_b(self):
         open_seats = self.find_open_seats()
         filled = []
-        for op in open_seats:
-            nearest = [(i, self.seats[add(*op, *a)]) for i, a in enumerate(self.adj)]
-            floors = [(i, n) for i, n in nearest if n == "."]
-            mult = 2
+        for s in open_seats:
+            nearest = [(i, self.seats[add(*s, *a)]) for i, a in enumerate(self.adj)]
+            floors = [i for i, n in nearest if n == "."]
+            multiplier = 2
             while len(floors):
-                for i, f in floors:
+                for i in floors:
                     nearest[i] = (
                         i,
-                        self.seats[add(*op, *self.adj[i], multiplier=mult)],
+                        self.seats[add(*s, *self.adj[i], multiplier=multiplier)],
                     )
-                floors = [(i, n) for i, n in nearest if n == "."]
-                mult += 1
-            if any(self.seats[n] == "L" for i, n in nearest):
-                filled.append(op)
+                floors = [i for i, n in nearest if n == "."]
+                multiplier += 1
+            if all(n != "#" for i, n in nearest):
+                filled.append(s)
         for f in filled:
             self.seats[f] = "#"
 
     def leave_adjacent_seats_b(self):
         filled_seats = self.find_filled_seats()
         left = []
-        for fs in filled_seats:
-            nearest = [(i, self.seats[add(*op, *a)]) for i, a in enumerate(self.adj)]
-            floors = [(i, n) for i, n in nearest if n == "."]
-            mult = 2
+        for s in filled_seats:
+            nearest = [(i, self.seats[add(*s, *a)]) for i, a in enumerate(self.adj)]
+            floors = [i for i, n in nearest if n == "."]
+            multiplier = 2
             while len(floors):
-                for i, f in floors:
+                for i in floors:
                     nearest[i] = (
                         i,
-                        self.seats[add(*op, *self.adj[i], multiplier=mult)],
+                        self.seats[add(*s, *self.adj[i], multiplier=multiplier)],
                     )
-                floors = [(i, n) for i, n in nearest if n == "."]
-                mult += 1
-            if sum(self.seats[n] == "#" for i, n in nearest) >= 5:
-                left.append(fs)
+                multiplier += 1
+                floors = [i for i, n in nearest if n == "."]
+            if sum(n == "#" for i, n in nearest) >= 5:
+                left.append(s)
         for l in left:
             self.seats[l] = "L"
 
