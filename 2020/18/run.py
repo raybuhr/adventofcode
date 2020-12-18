@@ -1,5 +1,5 @@
 from aocd import get_data
-import numpy as np
+from math import prod
 
 
 def simplify(formula, advanced=False):
@@ -8,7 +8,7 @@ def simplify(formula, advanced=False):
         group = left.split("(")[-1]
         left = left.replace("("+group, "")
         if advanced:
-            group = str(np.prod([eval(g) for g in group.split("*")]))
+            group = str(prod([eval(g) for g in group.split("*")]))
         else:
             group = group.split()
             while len(group) > 3:
@@ -32,7 +32,7 @@ def calc_simple(formula):
 def calc_advanced(formula):
     while "(" in formula:
         formula = simplify(formula, True)
-    return np.prod([eval(f) for f in formula.split("*")])
+    return prod([eval(f) for f in formula.split("*")])
 
 
 def solve_pt1(data):
