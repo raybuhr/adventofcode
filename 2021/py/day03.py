@@ -16,9 +16,8 @@ def part_one(data):
 
 
 def get_rating(data, bit_criteria="O2"):
-    BIT_CRITERIA = {"O2": operator.eq, "CO2": operator.ne}
+    op = {"O2": operator.eq, "CO2": operator.ne}[bit_criteria]
     df = data.copy()
-    op = BIT_CRITERIA[bit_criteria]
     for i in df.columns:
         col_max = df[i].value_counts().idxmax()
         if col_max == df[i].value_counts().idxmin():
