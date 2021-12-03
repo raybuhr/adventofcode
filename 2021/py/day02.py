@@ -12,11 +12,11 @@ def part_one(data):
     depth = 0
 
     for cmd, amt in data:
-        if cmd == 'forward':
+        if cmd == "forward":
             position += int(amt)
-        if cmd == 'down':
+        if cmd == "down":
             depth += int(amt)
-        if cmd == 'up':
+        if cmd == "up":
             depth -= int(amt)
 
     return position * depth
@@ -29,11 +29,11 @@ def part_two(data):
 
     for cmd, amount in data:
         amt = int(amount)
-        if cmd == 'down':
+        if cmd == "down":
             aim += amt
-        if cmd == 'up':
+        if cmd == "up":
             aim -= amt
-        if cmd == 'forward':
+        if cmd == "forward":
             position += amt
             depth += aim * amt
 
@@ -46,4 +46,3 @@ if __name__ == "__main__":
     print(part_one(data))
     print("*" * 10, "Part Two", "*" * 10)
     print(part_two(data))
-
