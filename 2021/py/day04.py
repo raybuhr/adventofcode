@@ -27,10 +27,6 @@ def check_number_in_board(number, board):
     return "nope", "nope"
 
 
-def check_board_wins(board):
-    pass
-
-
 def make_empty_five_by_five():
     return [[0 for _ in range(5)] for _ in range(5)]
 
@@ -69,15 +65,15 @@ def sum_unmarked_numbers_on_board(board, scores):
     return total
 
 
-# TODO
-# check each board for number
-# update status
-# check for winning row/column
-# sum winning board's unmarked numbers
-# mulitply sum by winning number
-
-
 def main(filename):
+    """B-I-N-G-O
+    TODO:
+        check each board for number
+        update status
+        check for winning row/column
+        sum winning board's unmarked numbers
+        mulitply sum by winning number
+    """
     numbers, boards = parse_data(filename)
     score_table = ScoreTable(len(boards))
     numbers_checked = []
