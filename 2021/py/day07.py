@@ -15,10 +15,7 @@ def part_one(data):
 
 def find_fuel_cost(data, position):
     dist = np.abs(data - position)
-    fuel = [
-        np.arange(1, d+1).sum()
-        for d in dist
-    ]
+    fuel = [np.arange(1, d + 1).sum() for d in dist]
     return sum(fuel)
 
 
