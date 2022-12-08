@@ -49,59 +49,22 @@ def find_all_visible(grid):
 print(f"part a {find_all_visible(grid):.0f}")
 
 
-def look_left(grid, row, col):
+def move(direction, row, col):
+    m = {
+        "left": (row, col - 1),
+        "right": (row, col + 1),
+        "up": (row - 1, col),
+        "down": (row + 1, col),
+    }
+    return m[direction]
+
+
+def look(direction, grid, row, col):
     h = grid[row, col]
     see = 0
     while True:
-        col -= 1
-        if col < 0:
-            break
-        if grid[row, col] < h:
-            see += 1
-        else:
-            see += 1
-            break
-    return see if see > 0 else 1
-
-
-def look_right(grid, row, col):
-    h = grid[row, col]
-    L = len(grid)
-    see = 0
-    while True:
-        col += 1
-        if col >= L:
-            break
-        if grid[row, col] < h:
-            see += 1
-        else:
-            see += 1
-            break
-    return see if see > 0 else 1
-
-
-def look_up(grid, row, col):
-    h = grid[row, col]
-    see = 0
-    while True:
-        row -= 1
-        if row < 0:
-            break
-        if grid[row, col] < h:
-            see += 1
-        else:
-            see += 1
-            break
-    return see if see > 0 else 1
-
-
-def look_down(grid, row, col):
-    h = grid[row, col]
-    L = len(grid)
-    see = 0
-    while True:
-        row += 1
-        if row >= L:
+        row, col = move(direction, row, col)
+        if col < 0 or col >= len(grid) or row < 0 or row >= len(grid):
             break
         if grid[row, col] < h:
             see += 1
@@ -112,10 +75,10 @@ def look_down(grid, row, col):
 
 
 def calc_scenic_score(grid, row, col):
-    up = look_up(grid, row, col)
-    down = look_down(grid, row, col)
-    left = look_left(grid, row, col)
-    right = look_right(grid, row, col)
+    up = look("up", grid, row, col)
+    down = look("down", grid, row, col)
+    left = look("left", grid, row, col)
+    right = look("right", grid, row, col)
     return up * down * left * right
 
 
