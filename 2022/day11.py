@@ -1,4 +1,3 @@
-from ast import literal_eval
 from collections import defaultdict
 from functools import reduce
 
