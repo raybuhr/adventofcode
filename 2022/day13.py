@@ -1,4 +1,6 @@
 import json
+from functools import cmp_to_key
+
 
 def read_packets(filename):
     with open(filename) as f:
@@ -10,49 +12,52 @@ def read_packets(filename):
         return packets
 
 
-def compare(a, b, idx=0):
-    try:
-        a_ = a[idx]
-    except IndexError:
-        return True
-    try:
-        b_ = b[idx]
-    except IndexError:
-        return False
-    if isinstance(a_, int) and isinstance(b_, int):
+def compare(a, b):
+    if isinstance(a, int) and isinstance(b, int):
         if a > b:
-            return False
-        idx += 1
-    elif isinstance(a_, int) and isinstance(b_, list):
-        a_ = [a_]
-        return compare(a_, b_)
-    elif isinstance(a_, list) and isinstance(b_, int):
-        b_ = [b_]
-        return compare(a_, b_)
-    elif isinstance(a_, list) and isinstance(b_, list):
-        if a_ == [] and b_ != []:
-            return True
-        elif a_ != [] and b_ == []:
-            return False
-        elif a_ == [] and b_ == []:
-            idx += 1
-            return compare(a, b, idx)
-        return compare(a_, b_)
-    return True
+            return -1
+        if b > a:
+            return 1
+        return 0
+    else:
+        if isinstance(a, int):
+            a = [a]
+        if isinstance(b, int):
+            b = [b]
+        if a == [] and b != []:
+            return 1
+        if a != [] and b == []:
+            return -1
+        if a == [] and b == []:
+            return 0
+        c = compare(a[0], b[0])
+        if c:
+            return c
+        else:
+            return compare(a[1:], b[1:])
 
 
 def sum_compared_indexes(packets):
     val = 0
     for i, pair in enumerate(packets, 1):
-        a, b = pair
-        if compare(a, b):
+        if compare(*pair) > 0:
             val += i
     return val
 
 
-packets = read_packets("input.txt")
+def sort_packets(packets):
+    packets_ = []
+    for a, b in packets:
+        packets_.append(a)
+        packets_.append(b)
+    packets_.append([[2]])
+    packets_.append([[6]])
+    packets_ = sorted(packets_, key=cmp_to_key(compare), reverse=True)
+    return packets_
 
-# TODO - bugs on 46, 149
-print(
-    compare(packets[46][0], packets[46][1])
-)
+
+packets = read_packets("input.txt")
+sorted_packets = sort_packets(packets)
+
+print("part a:", sum_compared_indexes(packets))
+print("part b:", (sorted_packets.index([[2]]) + 1) * (sorted_packets.index([[6]]) + 1))
