@@ -21,11 +21,11 @@ def get_xy_coords(line):
 
 
 def process_lines(lines):
-    sensors, beacons = [], []
+    sensors, beacons = [], {}
     for line in lines:
         sensor, beacon = line.split(":")
         sensor, beacon = get_xy_coords(sensor), get_xy_coords(beacon)
-        beacons.append(beacon)
+        beacons[beacon] = 1
         sensors.append(
             Sensor(
                 x=sensor[0],
@@ -37,19 +37,71 @@ def process_lines(lines):
     return sensors, beacons
 
 
-def can_point_contain_a_beacon(x, y, sensor):
-    d = manhattan_distance((sensor.x, sensor.y), (x, y))
-    if d <= sensor.distance:
-        return False
-    return (x, y) in beacons
+def count_impossible_in_row(y):
+    cant_have_beacon = {}
+
+    for s in sensors:
+        bx, by = s.closest_beacon
+        b_dist = abs(s.x - bx) + abs(s.y - by)
+        y_dist = abs(s.y - y)
+        if y_dist <= b_dist:
+            x_range = b_dist - y_dist
+            for x in range(s.x - x_range, s.x + x_range + 1):
+                if not beacons.get((x, y)):
+                    cant_have_beacon[x] = True
+
+    return len(cant_have_beacon)
 
 
-def find_impossible_in_row(y, start, stop):
-    ct = 0
-    for x in range(start, stop+1):
-        if not any(can_point_contain_a_beacon(x, y, s) for s in sensors):
-             ct += 1
-    return ct
+def merge_intervals(intervals):
+    # Sort the array on the basis of start values of intervals.
+    intervals.sort()
+    stack = []
+    # insert first interval into stack
+    stack.append(intervals[0])
+    for i in intervals[1:]:
+        # Check for overlapping interval
+        if stack[-1][0] <= i[0] <= stack[-1][-1]:
+            stack[-1][-1] = max(stack[-1][-1], i[-1])
+        else:
+            stack.append(i)
+
+    return stack
+
+
+def find_sensor_range(sensor, y):
+    v = abs(sensor.y - y)
+    if v > sensor.distance:
+        return [-1, -1]
+    l = sensor.x - sensor.distance + v
+    r = sensor.x + sensor.distance - v
+    return [l, r]
+
+
+def has_gaps(intervals, start=0, stop=4_000_000):
+    for i in intervals:
+        if i[0] > start:
+            return True
+        if i[1] < stop:
+            return True
+    return False
+
+
+def check_rows(max_row):
+    check_these_rows = {}
+    for y in range(0, max_row + 1):
+        m = merge_intervals([find_sensor_range(s, y) for s in sensors])
+        if has_gaps(m, 0, max_row):
+            check_these_rows[y] = m
+    return check_these_rows
+
+
+def find_beacon(max_row):
+    rows = check_rows(max_row)
+    for y, intervals in rows.items():
+        if intervals[1][0] - 1 == intervals[0][1] + 1:
+            x = intervals[1][0] - 1
+            return x * max_row + y
 
 
 if __name__ == "__main__":
@@ -57,6 +109,9 @@ if __name__ == "__main__":
         lines = f.read().strip().splitlines()
 
     sensors, beacons = process_lines(lines)
-    print("Sensors:")
-    for s in sensors:
-        print(s)
+    row = 2_000_000
+    impossible = count_impossible_in_row(row)
+    print("part a:", impossible)
+    freq = 4_000_000
+    tuning_fequency = find_beacon(freq)
+    print("part b:", tuning_fequency)
